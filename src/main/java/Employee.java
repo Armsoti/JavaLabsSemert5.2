@@ -1,10 +1,13 @@
 import java.util.Objects;
+
 /**
  * Клас, що описує сутність працівника підприємства.
  */
 public class Employee {
+    private static int counter = 0;
+
     private String name;
-    private String position;
+    private Position position;
     private double salary;
     private int age;
 
@@ -12,16 +15,41 @@ public class Employee {
      * Конструктор для ініціалізації об'єкта Employee з перевіркою параметрів.
      *
      * @param name     ім'я працівника (не пусте)
-     * @param position посада (не пуста)
+     * @param position посада (значення з enum Position)
      * @param salary   зарплата (більше 0)
      * @param age      вік працівника (від 18 до 70)
      */
-
-    public Employee(String name, String position, double salary, int age) {
+    public Employee(String name, Position position, double salary, int age) {
         setName(name);
         setPosition(position);
         setSalary(salary);
         setAge(age);
+        counter++;
+    }
+
+    /**
+     * Конструктор копіювання для створення незалежного дубліката об'єкта.
+     *
+     * @param other об'єкт Employee, дані якого копіюються
+     */
+    public Employee(Employee other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null!");
+        }
+        this.name = other.name;
+        this.position = other.position;
+        this.salary = other.salary;
+        this.age = other.age;
+        counter++;
+    }
+
+    /**
+     * Статичний метод для отримання загальної кількості створених працівників.
+     *
+     * @return кількість створених об'єктів Employee
+     */
+    public static int getCounter() {
+        return counter;
     }
 
     public String getName() {
@@ -35,13 +63,13 @@ public class Employee {
         this.name = name;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
-        if (position == null || position.trim().isEmpty()) {
-            throw new IllegalArgumentException("Посада не може бути порожньою!");
+    public void setPosition(Position position) {
+        if (position == null) {
+            throw new IllegalArgumentException("Посада обов'язково повинна бути вказана!");
         }
         this.position = position;
     }
@@ -70,7 +98,7 @@ public class Employee {
 
     @Override
     public String toString() {
-        return "Employee{name='" + name + "', position='" + position + "', salary=" + salary + ", age=" + age + "}";
+        return "Employee{name='" + name + "', position=" + position + ", salary=" + salary + ", age=" + age + "}";
     }
 
     @Override
@@ -81,7 +109,7 @@ public class Employee {
         return Double.compare(employee.salary, salary) == 0 &&
                 age == employee.age &&
                 Objects.equals(name, employee.name) &&
-                Objects.equals(position, employee.position);
+                position == employee.position;
     }
 
     @Override
